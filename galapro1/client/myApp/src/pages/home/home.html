@@ -13,7 +13,7 @@
       <ion-checkbox  item-right formControlName="isChecked" (ionChange)="updateData()"></ion-checkbox>
     </ion-item>
     <ion-label item-right *ngIf="isInvalid">{{errMessaage}}!</ion-label>
-    <button ion-button type="submit" [disabled]="!form.valid">Submit</button>
+    <button ion-button type="submit" [disabled]="!form.value.data && !form.value.isChecked ">Submit</button>
   </form>
   <button ion-button type="button" (click)="addingDefaultURL()">Add Default!</button>
 </ion-content>

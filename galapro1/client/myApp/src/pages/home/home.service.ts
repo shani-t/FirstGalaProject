@@ -6,14 +6,16 @@ import { Subject } from "../../../node_modules/rxjs/Subject";
 @Injectable()
 export class HomeService {
   private invalidUrl = new Subject<{errMessage:string , isInvalid:boolean}>();
+  private regexPattern = RegExp('https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,}');
 
   constructor(private http: HttpClient) {}
 
   sendData(data: string, isChecked: boolean) {
-    var regexPattern = RegExp(
-      '^(http://www.|https://www.|http://|https://)?[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?$','g');
-     //var regexValidation = regexPattern.test(data.toString());
-    const redirect: redirectData = { data: data, isChecked: isChecked ,regexValidation:regexPattern.test(data.toString()) };
+    // var regexPattern = RegExp(
+    //   '^(http://www.|https://www.|http://|https://)?[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?$','g');
+    this.regexPattern.lastIndex = 0 ;
+      var regexValid = this.regexPattern.test(data.toString());
+    const redirect: redirectData = { data: data, isChecked: isChecked ,regexValidation: regexValid};
     this.http
       .post<{ data: string }>("http://localhost:3000/api/update", redirect)
       .subscribe(
