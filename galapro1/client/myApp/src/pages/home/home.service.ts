@@ -5,41 +5,37 @@ import { Subject } from "../../../node_modules/rxjs/Subject";
 
 @Injectable()
 export class HomeService {
-  private invalidUrl = new Subject<{errMessage:string , isInvalid:boolean}>();
-  private regexPattern = RegExp('https?:\/\/(?:www\.|(?!www))[^\s\.]+\.[^\s]{2,}|www\.[^\s]+\.[^\s]{2,}');
+  private invalidUrl = new Subject<{
+    errMessage: string;
+    isInvalid: boolean;
+  }>();
 
   constructor(private http: HttpClient) {}
 
   sendData(data: string, isChecked: boolean) {
-    // var regexPattern = RegExp(
-    //   '^(http://www.|https://www.|http://|https://)?[a-z0-9]+([-.]{1}[a-z0-9]+)*.[a-z]{2,5}(:[0-9]{1,5})?(/.*)?$','g');
-    this.regexPattern.lastIndex = 0 ;
-      var regexValid = this.regexPattern.test(data.toString());
-    const redirect: redirectData = { data: data, isChecked: isChecked ,regexValidation: regexValid};
+    const redirect: redirectData = { data: data, isChecked: isChecked };
     this.http
       .post<{ data: string }>("http://localhost:3000/api/update", redirect)
       .subscribe(
         responseData => {
-          console.log(responseData.data);
           this.invalidUrl.next({
-            errMessage:"",
-            isInvalid: false
+            errMessage: "",
+            isInvalid: false,
           });
-          responseData.data =responseData.data.replace(window.location.href, "")
-            window.open(responseData.data);
+
+          window.open(responseData.data);
         },
         err => {
-          console.log(err.error);
           this.invalidUrl.next({
-            errMessage:err.error,
+            errMessage: err.error,
             isInvalid: true
           });
         }
       );
   }
 
-  addingDefault(data: string)  {
-    const redirect: redirectData = { data: data, isChecked: true,regexValidation:true };
+  addingDefault(data: string) {
+    const redirect: redirectData = { data: data, isChecked: true };
     this.http
       .post<{ message: string }>(
         "http://localhost:3000/api/addDefault",
@@ -54,7 +50,4 @@ export class HomeService {
   geValidationListener() {
     return this.invalidUrl.asObservable();
   }
-
-
-
 }
