@@ -85,6 +85,7 @@ app.post("/api/update", async (req, res, next) => {
       console.log("not valid url");
       const getRedirect = await Redirect.findOne({});
       if(getRedirect){
+        console.log(getRedirect);
         /* Task 1 */
         // res.status(200).json({
         //   data: DEFAUTL_URL

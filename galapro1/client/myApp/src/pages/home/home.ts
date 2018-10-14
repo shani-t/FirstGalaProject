@@ -52,12 +52,18 @@ export class HomePage {
       }
 
       if (this.errMessage == "the checkbox isn't marked") {
-        this.socket.connect();
+        if(!this.socket.ioSocket.connected){
+          this.socket.connect();
+        }
         this.socket.emit("set-current-url", this.form.value.data);
+
       }
       else {
-        this.socket.emit("set-current-url", "stop");
-        this.socket.disconnect();
+        if(this.socket.ioSocket.connected){
+          this.socket.emit("set-current-url", "stop");
+          this.socket.disconnect();
+        }
+
       }
     });
   }
@@ -65,7 +71,7 @@ export class HomePage {
     console.log("click on checkBox");
   }
   addingDefaultURL() {
-    this.homeService.addingDefault("www.google.com");
+    this.homeService.addingDefault("http://www.google.com");
   }
 
   getDataFromSocket() {
